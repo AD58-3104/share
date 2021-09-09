@@ -107,8 +107,8 @@ class InfoShareServer
     boost::asio::streambuf receive_buff_;
     static const int32_t buffer_size_ = 1024;
     int32_t port_;
+    std::function<void(std::string&& s)> bytestringHandler_;
     std::unique_ptr<std::thread> server_thread_;
-    //bytestringHandler
 #ifdef BOOST_VERSION_IS_HIGHER_THAN_1_65
     boost::asio::executor_work_guard<boost::asio::io_context::executor_type> w_guard_;
 #else
@@ -116,9 +116,9 @@ class InfoShareServer
 #endif //BOOST_VERSION_IS_HIGHER_THAN_1_65
 
 public:
-    InfoShareServer(int32_t port) //コンストラクタでRobotstatusの参照を渡しておく
+    InfoShareServer(int32_t port,std::function<void(std::string&&)> func) //コンストラクタでRobotstatusの参照を渡しておく
         : io_service_(),
-          socket_(io_service_, udp::endpoint(udp::v4(), port)), terminated_(false), port_(port),
+          socket_(io_service_, udp::endpoint(udp::v4(), port)), terminated_(false), port_(port),bytestringHandler_(func),
 #ifdef BOOST_VERSION_IS_HIGHER_THAN_1_65
           w_guard_(boost::asio::make_work_guard(io_service_))
 #else
@@ -158,16 +158,11 @@ public:
         }
         else
         {
-            // const char* data = asio::buffer_cast<const char*>(receive_buff_.data());
-            const std::string data(boost::asio::buffer_cast<const char *>(receive_buff_.data()), bytes_transferred);
-            // const std::string data(boost::asio::buffer_cast<const char*>(receive_buff_.data()),bytes_transferred);
-            std::cout << data << "::length " << bytes_transferred << std::endl;
+            std::string data(boost::asio::buffer_cast<const char *>(receive_buff_.data()), bytes_transferred);
+            std::cout << "length::" << bytes_transferred << " " << std::endl;
+            bytestringHandler_(std::move(data));
+            std::cout << data;
             receive_buff_.consume(receive_buff_.size());
-            // if (data.compare("end") == 0)
-            // {
-            //     terminated_ = true;
-            // }
-            // // receive_buff_.consume(receive_buff_.size());
             if (!terminated_)
             {
                 startReceive();
