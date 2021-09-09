@@ -8,7 +8,7 @@
 using boost::asio::ip::udp;
 using namespace std::literals::chrono_literals;
 
-#if (((BOOST_VERSION / 1000) + ((BOOST_VERSION) % 1000)) > 165)
+#if (((BOOST_VERSION / 100000) + ((BOOST_VERSION)/ 100 % 1000)) > 165)
 //Boost1.65より新しい時(io_serviceがdeprecatedな為分けている)
 /**/ #define BOOST_VERSION_IS_HIGHER_THAN_1_65
 #else
