@@ -1,5 +1,6 @@
 #include "header.hpp"
 
+using namespace  Citbrains::infosharemodule;
 int main(int argc, char const *argv[])
 {
 
@@ -7,7 +8,7 @@ int main(int argc, char const *argv[])
 
     
     for(int i = 0;i < 5;++i)
-        client.send(std::string("ieeeeeeeeeeeeei"));
+        client.send(std::string("ieeeeeeeeeeeeei") + std::to_string(i));
     std::string end("end");
     // client.send(std::move(end));
     std::cout << "now end status ->"<< end << "running\n";

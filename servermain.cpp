@@ -1,10 +1,11 @@
 #include "header.hpp"
 #include <vector>
+using namespace  Citbrains::infosharemodule;
 int main(int argc, char const *argv[])
 {
     boost::asio::io_service io_service;
     std::vector<std::string> stringContainer; 
-    InfoShareServer server(7110,[&stringContainer](std::string&& s){
+    Server server(7110,[&stringContainer](std::string&& s){
         std::string moved_string(std::move(s));
         std::cout << moved_string;
         stringContainer.push_back(moved_string);
