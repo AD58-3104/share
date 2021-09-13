@@ -36,6 +36,13 @@ using namespace std::literals::chrono_literals;
 #endif //BOOST_VERSION_IS_HIGHER_THAN_1_65
 
         public:
+            /**
+             * @fn
+             * コンストラクタ
+             * @brief コンストラクタ
+             * @param (address) 送り先のIPアドレス
+             * @param (port) 送り先のポート番号
+             */
             Client(std::string address, int32_t port)
                 : io_service_(), socket_(io_service_), cnt(0), port_(port), ip_address_(address),
 #ifdef BOOST_VERSION_IS_HIGHER_THAN_1_65
@@ -122,7 +129,15 @@ using namespace std::literals::chrono_literals;
 #endif //BOOST_VERSION_IS_HIGHER_THAN_1_65
 
         public:
-            Server(int32_t port, std::function<void(std::string &&)> func) //コンストラクタでRobotstatusの参照を渡しておく
+            /**
+            * @fn
+            * コンストラクタ
+            * @brief コンストラクタ
+            * @param (port) サーバーがデータを受け取るためのポート番号
+            * @param (func) 受け取ったデータ(文字列)を処理する為の関数オブジェクト
+            * @detail 第二引数の関数オブジェクトはstd::stringの右辺値参照を取る。呼び出した時点から受信待機を行う。
+            */
+            Server(int32_t port, std::function<void(std::string &&)> func)
                 : io_service_(),
                   socket_(io_service_, udp::endpoint(udp::v4(), port)), terminated_(false), port_(port), receivedHandler_(func),
 #ifdef BOOST_VERSION_IS_HIGHER_THAN_1_65
@@ -131,7 +146,8 @@ using namespace std::literals::chrono_literals;
                   w_guard_(std::make_shared<boost::asio::io_service::work>(io_service_))
 #endif //BOOST_VERSION_IS_HIGHER_THAN_1_65
             {
-                server_thread_ = std::make_unique<std::thread>([&](){ io_service_.run(); });
+                server_thread_ = std::make_unique<std::thread>([&]()
+                                                               { io_service_.run(); });
                 startReceive();
             }
             ~Server()
@@ -140,7 +156,7 @@ using namespace std::literals::chrono_literals;
             }
             Server(const Server &) = delete;
             Server &operator=(const Server &) = delete;
-            // 受信開始
+            // 受信開始。コンストラクタで呼ばれる。
             void startReceive()
             {
                 std::this_thread::sleep_for(10ms);
@@ -156,7 +172,7 @@ using namespace std::literals::chrono_literals;
                         });
             }
 
-            // 受信のハンドラ
+            // 受信のハンドラ。データを受け取った時に呼ばれる。
             void receiveHandler(const boost::system::error_code &error, size_t bytes_transferred)
             {
                 if (error && error != boost::asio::error::eof)
@@ -176,6 +192,11 @@ using namespace std::literals::chrono_literals;
                     }
                 }
             }
+            /**
+             * @fn
+             * 終了関数
+             * @brief サーバーを停止する時に呼び出す。デストラクタでも呼び出されるので、インスタンスの寿命を管理するならわざわざ呼び出さなくても終了可能。 
+             */
             void terminate()
             {
                 static bool already_called = false;
