@@ -1,0 +1,2 @@
+# Hashes of file build rules.
+df7bd57c587bd6a129033b62d8ee22e1 infoshare.pb.h

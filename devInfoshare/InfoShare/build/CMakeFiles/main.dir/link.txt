@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/infoshare.cpp.o CMakeFiles/main.dir/infoshare.pb.cc.o -o main  -Wl,-rpath,/usr/local/lib -lrt /usr/local/lib/libprotobuf.so -lpthread 

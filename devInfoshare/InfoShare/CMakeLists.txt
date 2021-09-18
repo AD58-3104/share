@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.18)
+project(Infoshare)
+find_package(Protobuf REQUIRED)
+find_package(Boost REQUIRED thread system date_time)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS infoshare.proto)
+
+set(InfoShareSrc main.cpp infoshare.cpp infoshare.h try/header.hpp)
+add_executable(main ${InfoShareSrc} ${PROTO_SRCS} ${PROTO_HDRS})
+
+target_compile_features(main PUBLIC cxx_std_17)
+target_compile_options(main PUBLIC -O2 -Wall -Wpedantic) 
+target_include_directories(main PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(main PRIVATE ${Protobuf_INCLUDE_DIRS})
+target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/try)
+target_link_libraries(main -lrt protobuf::libprotobuf )
+
+message("------------------//include directories//-----------------")
+message(${Protobuf_INCLUDE_DIRS})
+message(${CMAKE_CURRENT_BINARY_DIR})
+message(${CMAKE_SOURCE_DIR}/try)
+message("----------------------------------------------------------")

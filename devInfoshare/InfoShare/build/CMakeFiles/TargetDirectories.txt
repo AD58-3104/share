@@ -1,0 +1,3 @@
+/home/satoshi/playspace/devInfoshare/InfoShare/build/CMakeFiles/rebuild_cache.dir
+/home/satoshi/playspace/devInfoshare/InfoShare/build/CMakeFiles/edit_cache.dir
+/home/satoshi/playspace/devInfoshare/InfoShare/build/CMakeFiles/main.dir
